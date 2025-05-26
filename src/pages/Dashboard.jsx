@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_API_URL } from "../Api";
 
 function InfoField({ label, value, delay = 0 }) {
   return (
@@ -32,6 +34,23 @@ const AccordionSection = ({ title, children }) => {
 
 const Dashboard = () => {
   const student = useSelector((state) => state.auth.user);
+  const [admitCard, setAdmitCard] = useState({});
+
+  const phone = student["Mob No"];
+
+  console.log(admitCard);
+
+  useEffect(() => {
+    const fetchAdmitCard = async () => {
+      try {
+        const res = await axios.get(`${BASE_API_URL}/student-admit-card/${phone}`);
+        setAdmitCard(res.data.result);
+      } catch (error) {
+        console.error("Error fetching admit card:", error);
+      }
+    };
+    fetchAdmitCard();
+  }, [phone]);
 
   const hasParticipated = (key) => student?.[key] === "1";
 
@@ -48,7 +67,23 @@ const Dashboard = () => {
   }));
 
   return (
-    <div className="flex-1 w-full min-h-screen lg:p-8 p-4">
+    <div className="flex-1 w-full min-h-screen lg:p-2 p-4">
+      {/* Admit Card Notification */}
+      {Object.keys(admitCard).length > 0 && (
+        <div className="mb-6 p-4 bg-green-100 text-green-800 rounded-lg shadow-md animate-fade-in">
+          <p className="font-semibold">
+            Admit Card Available!{" "}
+            <a
+              href="/admit-card"
+              rel="noopener noreferrer"
+              className="underline hover:text-green-600 transition-colors duration-200"
+            >
+              Click here to download
+            </a>
+          </p>
+        </div>
+      )}
+
       {/* HEADER */}
       <div className="flex justify-between items-center mb-8 animate-fade-in">
         <div className="flex items-center gap-4">
@@ -123,11 +158,10 @@ const Dashboard = () => {
                 {subjects.map((subject, idx) => (
                   <td key={idx} className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        hasParticipated(`${subject.prefix} Basic`)
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${hasParticipated(`${subject.prefix} Basic`)
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-600"
+                        }`}
                     >
                       {hasParticipated(`${subject.prefix} Basic`) ? "Yes" : "Not participated"}
                     </span>
@@ -152,11 +186,10 @@ const Dashboard = () => {
                 {subjects.map((subject, idx) => (
                   <td key={idx} className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        hasParticipated(`${subject.prefix} Advance`)
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${hasParticipated(`${subject.prefix} Advance`)
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-600"
+                        }`}
                     >
                       {hasParticipated(`${subject.prefix} Advance`)
                         ? subject.display === "IIMOL"
@@ -195,11 +228,10 @@ const Dashboard = () => {
                 {subjects.map((subject, idx) => (
                   <td key={idx} className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        hasParticipated(`${subject.prefix} Basic Book`)
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${hasParticipated(`${subject.prefix} Basic Book`)
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-600"
+                        }`}
                     >
                       {hasParticipated(`${subject.prefix} Basic Book`) ? "Yes" : "No"}
                     </span>
@@ -207,7 +239,7 @@ const Dashboard = () => {
                 ))}
                 <td className="px-6 py-4 text-gray-600">
                   {subjects.some((subject) => hasParticipated(`${subject.prefix} Basic Book`)) &&
-                  student.bookStatus
+                    student.bookStatus
                     ? `Delivered on ${student.bookStatus}`
                     : "Not delivered"}
                 </td>

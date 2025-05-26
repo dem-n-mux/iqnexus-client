@@ -40,9 +40,8 @@ function MenuItem({
     <Link
       to={href}
       onClick={handleClick}
-      className={`group flex items-center gap-3 px-6 py-3 text-sm transition-all duration-300 animate-slide-in ${
-        active ? "bg-blue-900 font-semibold" : "hover:bg-blue-800"
-      }`}
+      className={`group flex items-center gap-3 px-6 py-3 text-sm transition-all duration-300 animate-slide-in ${active ? "bg-blue-900 font-semibold" : "hover:bg-blue-800"
+        }`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <span className="transition-transform duration-300 group-hover:scale-110">
@@ -86,9 +85,8 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:static w-64 bg-[#003B87] text-white flex flex-col shadow-xl h-full z-50 transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
+        className={`fixed md:static w-64 bg-[#003B87] text-white flex flex-col shadow-xl h-full z-50 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
       >
         <div className="flex items-center justify-center pt-4">
           <img
@@ -114,7 +112,7 @@ const Sidebar = () => {
             href="/admit-card"
             onClick={closeSidebar}
           />
-          <MenuItem
+          {/* <MenuItem
             icon={<GraduationCap size={20} />}
             text="RESULTS"
             delay={200}
@@ -127,7 +125,7 @@ const Sidebar = () => {
             delay={300}
             href="/study-materials"
             onClick={closeSidebar}
-          />
+          /> */}
           <MenuItem
             icon={<Award size={20} />}
             text="CERTIFICATIONS"
