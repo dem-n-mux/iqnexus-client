@@ -137,6 +137,7 @@ const AdmitCard = () => {
           <option value="L1">Level 1</option>
           <option value="L2">Level 2</option>
         </select>
+
       </div>
 
       {/* Admit Card Container */}

@@ -38,7 +38,8 @@ const Dashboard = () => {
 
   const phone = student["Mob No"];
 
-  console.log(admitCard);
+  console.log(student);
+
 
   useEffect(() => {
     const fetchAdmitCard = async () => {
