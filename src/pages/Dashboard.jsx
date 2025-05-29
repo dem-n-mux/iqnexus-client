@@ -55,17 +55,24 @@ const Dashboard = () => {
 
   const hasParticipated = (key) => student?.[key] === "1";
 
-  // Extract subject prefixes like IAOL, IIMOL, etc.
-  const subjects = Array.from(
-    new Set(
-      Object.keys(student || {})
-        .filter((key) => key.match(/^(.*)(L Basic|L Advance|L Basic Book)$/))
-        .map((key) => key.split(" ")[0])
-    )
-  ).map((prefix) => ({
-    prefix,
-    display: prefix,
-  }));
+  const subjectNameMap = {
+  IMOL: "IQMO",
+  ITSTL: "IQSO",
+  IENGOL: "IQEO",
+  IAOL: "IQRO",
+  IGKOL: "IQGKO",
+};
+
+const subjects = Array.from(
+  new Set(
+    Object.keys(student || {})
+      .filter((key) => key.match(/^(.*)(L Basic|L Advance|L Basic Book)$/))
+      .map((key) => key.split(" ")[0])
+  )
+).map((prefix) => ({
+  prefix,
+  display: subjectNameMap[prefix] || prefix, // fallback to original if not mapped
+}));
 
   return (
     <div className="flex-1 w-full min-h-screen lg:p-2 p-4">
