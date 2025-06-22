@@ -12,7 +12,7 @@ const StudyMaterials = () => {
 
   const fetchStudyMaterials = async () => {
     try {
-      const response = await axios.post(`${BASE_API_URL}/fetch-study-material`, {
+      const response = await axios.post(`${BASE_API_URL}/fetchStudyMaterial`, {
         mobNo: student["Mob No"],
       });
 
@@ -52,17 +52,17 @@ const StudyMaterials = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col w-full items-center gap-4 mb-6 max-w-md mx-auto">
+      {/* <div className="flex flex-col w-full items-center gap-4 mb-6 max-w-md mx-auto">
         <select
           className="w-full bg-white border border-gray-300 rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           value={selectedLevel}
           onChange={(e) => setSelectedLevel(e.target.value)}
         >
           <option value="">Select Level</option>
-          <option value="1">Level 1</option>
-          <option value="2">Level 2</option>
+          <option value="1">Level 1</option> 
+           <option value="2"></option>
         </select>
-      </div>
+      </div> */}
 
       {/* Study Materials Table */}
       <div className="bg-white shadow-lg rounded-xl overflow-hidden flex-grow">

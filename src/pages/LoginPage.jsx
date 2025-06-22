@@ -12,13 +12,33 @@ const LoginPage = () => {
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [studentOptions, setStudentOptions] = useState([]);
 
+  // Popup for selecting student profile
+  const handleSelectStudent = (student) => {
+    // Calculate expiration timestamp (7 days from now)
+    const expirationDays = 7;
+    const expirationTime = new Date().getTime() + expirationDays * 24 * 60 * 60 * 1000;
+
+    // Save to localStorage with expiration
+    localStorage.setItem("student_mobile", mobile);
+    localStorage.setItem("student_data", JSON.stringify(student));
+    localStorage.setItem("auth_expiration", expirationTime.toString());
+
+    // Update Redux state
+    dispatch(login({ user: student, token: mobile }));
+    setIsPopupOpen(false);
+  };
+
+  // handleLogin always shows popup if any student found
   const handleLogin = async () => {
     setFormSubmitting(true);
     setLoading(true);
     if (!mobile) {
       alert("Please enter your mobile number.");
       setFormSubmitting(false);
+      setLoading(false);
       return;
     }
 
@@ -28,43 +48,66 @@ const LoginPage = () => {
           authorization: `Bearer ${mobile}`,
         },
       });
-
       if (response.status === 200 && response.data) {
-        const studentData = response.data.studentData;
-
-        // Calculate expiration timestamp (7 days from now)
-        const expirationDays = 7;
-        const expirationTime = new Date().getTime() + expirationDays * 24 * 60 * 60 * 1000;
-
-        // Save to localStorage with expiration
-        localStorage.setItem("student_mobile", mobile);
-        localStorage.setItem("student_data", JSON.stringify(studentData));
-        localStorage.setItem("auth_expiration", expirationTime.toString());
-
-        // Update Redux state
-        dispatch(login({ user: studentData, token: mobile }));
+        let studentData = response.data.studentData;
+        // Always treat studentData as an array, even if falsy or duplicate
+        if (!Array.isArray(studentData)) {
+          studentData = studentData !== undefined && studentData !== null ? [studentData] : [];
+        }
+        // Only show alert if array is empty
+        if (Array.isArray(studentData) && studentData.length > 0) {
+          setStudentOptions(studentData);
+          setIsPopupOpen(true);
+        } else {
+          alert("No student record found.");
+        }
       } else {
         alert("Invalid credentials or no data found.");
       }
-    } catch (error) {
+        } catch (error) {
       const status = error.response?.status;
       const errMsg = error.response?.data?.error || "Something went wrong";
-
-      if (status === 500) {
+      // Only show "No student found" if API returns empty array
+      if (Array.isArray(error.response?.data?.studentData) && error.response.data.studentData.length === 0) {
+        alert("No student record found.");
+      } else if (status === 500) {
         alert("Server error: Failed to fetch student data");
       } else if (status === 400) {
         alert("Invalid request: Mobile number is required");
       } else {
         alert(errMsg);
       }
-    } finally {
+        } finally {
       setFormSubmitting(false);
       setLoading(false);
-    }
-  };
-
+        }
+      };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Select Student Profile</h2>
+            <div className="space-y-2">
+              {studentOptions.map((student, idx) => (
+                <button
+                  key={student._id || idx}
+                  onClick={() => handleSelectStudent(student)}
+                  className="w-full flex flex-col items-start border border-gray-200 rounded-lg px-4 py-3 hover:bg-blue-50 transition-all duration-200 mb-2"
+                >
+                  <span className="font-medium text-blue-700">{student["Student's Name"]}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setIsPopupOpen(false)}
+              className="w-full mt-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg px-4 py-2 font-medium transition-all duration-200"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-4 animate-fade-in">
           <div className="text-center space-y-2">
@@ -112,13 +155,14 @@ const LoginPage = () => {
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg px-4 py-3 font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 group"
             >
               {formSubmitting ? "Logging In..." : "Login"}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
-          <div className="text-center pt-2">
-            <p className="text-sm text-gray-500">
-              Need help?{" "}
+          <div className="pt-4 text-center">
+            <p className="text-xs text-gray-400">
+              Having trouble logging in?{" "}
               <a
-                href="/support"
+                href="mailto:support@iqnexus.in"
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
                 Contact Support

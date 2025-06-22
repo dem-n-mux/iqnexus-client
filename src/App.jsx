@@ -39,10 +39,10 @@ function App() {
             path="/results"
             element={user ? <Results /> : <Navigate to="/" replace />}
           />
-          <Route
+          {/* <Route
             path="/study-materials"
             element={user ? <StudyMaterials /> : <Navigate to="/" replace />}
-          />
+          /> */}
           <Route
             path="/certificates"
             element={user ? <Certificates /> : <Navigate to="/" replace />}
