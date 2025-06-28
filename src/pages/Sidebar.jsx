@@ -119,13 +119,13 @@ const Sidebar = () => {
             href="/results"
             onClick={closeSidebar}
           /> */}
-          {/* <MenuItem
+          <MenuItem
             icon={<BookOpen size={20} />}
             text="STUDY MATERIALS"
             delay={300}
             href="/study-materials"
             onClick={closeSidebar}
-          /> */}
+          />
           <MenuItem
             icon={<Award size={20} />}
             text="CERTIFICATIONS"

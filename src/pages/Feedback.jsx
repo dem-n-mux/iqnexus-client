@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { BASE_API_URL } from "../Api";
 
 const Feedback = () => {
   const studentData = localStorage.getItem("student_data");
@@ -10,32 +12,24 @@ const Feedback = () => {
   const [student, setStudent] = useState({ rollNo: JSON.parse(studentData)["Roll No"], mobNo: JSON.parse(studentData)["Mob No"] });
   const [loading, setLoading] = useState(true);
 console.log("studentData", student);
-  useEffect(() => {
-    // Replace with your actual API endpoint
-    fetch("/api/student/", {
-      credentials: "include", // if using cookies/session
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setStudent({ rollNo: data.rollNo, mobNo: data.mobNo });
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    alert("🎉 Feedback submitted successfully!");
+    const result= await  
+    axios.post(`${BASE_API_URL}/storeFeedback`,{ rollNo:JSON.parse(studentData)["Roll No"], category:formData.category, message: formData.message, status: formData.status, 
+      mobileNo: JSON.parse(studentData)["Mob No"] })
+      if(result.data.success){alert("🎉 Feedback submitted successfully!");}
+      else{alert("❌ Failed to submit feedback. Please try again later.");}
+    e.preventDefault();
+    
     setFormData({ category: "complaint",rollNo: student.rollNo, mobNo: student.mobNo, message: "", status: "pending" });
   };
 
-  if (loading) return <div>Loading...</div>;
+
 
   return (
     <div className="h-screen w-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center">
@@ -95,7 +89,7 @@ console.log("studentData", student);
               required
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
@@ -109,7 +103,7 @@ console.log("studentData", student);
               <option value="in_progress">Hold</option>
               <option value="resolved">Resolved</option>
             </select>
-          </div>
+          </div> */}
          
           <button
             type="submit"
