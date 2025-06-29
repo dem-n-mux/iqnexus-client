@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Download, FileText } from "lucide-react";
+import axios from "axios";
+import { BASE_API_URL } from "../Api";
 
 const dummyData = [
     {
@@ -60,6 +62,32 @@ const dummyData = [
     }
 ];
 const AnswerKey = () => {
+    const [answerKeys   , setAnswerKeys] = useState([]);
+
+    useEffect(() => {
+fetchAnswerKeys();
+        
+        }, []);
+        const fetchAnswerKeys = async () => {
+        try {
+      const response=await  axios.post(`${BASE_API_URL}/getAnswers`, {
+          rollNo: JSON.parse(localStorage.getItem("student_data"))['Roll No'],
+          className: JSON.parse(localStorage.getItem("student_data"))['Class'],
+            schoolCode: JSON.parse(localStorage.getItem("student_data"))['School Code']
+        
+        })
+            if (response.status === 200) {
+     
+                console.log("Answer keys fetched successfully:", response.data.answerKeys);
+                setAnswerKeys(response.data.answerKeys);
+            } else {
+                console.error("Failed to fetch answer keys:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error fetching answer keys:", error);
+        }
+    }
+
     const [showPopup, setShowPopup] = useState(false);
     const [selectedQuestions, setSelectedQuestions] = useState(null);
 
@@ -92,11 +120,11 @@ const AnswerKey = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dummyData.map((item, idx) => (
+                        {answerKeys.map((item, idx) => (
                             <tr key={idx} className="hover:bg-gray-50 transition duration-200">
-                                <td className="px-4 py-3 border-b">{item.examlevel}</td>
+                                <td className="px-4 py-3 border-b">{item.examlevel==="L1" ? "Basic" :"Advance"}</td>
                                 <td className="px-4 py-3 border-b">{item.subject}</td>
-                                <td className="px-4 py-3 border-b">{item.className}</td>
+                                <td className="px-4 py-3 border-b">{item.class}</td>
                                 <td className="px-4 py-3 border-b">
                                     <button
                                         className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
@@ -137,7 +165,7 @@ const AnswerKey = () => {
                                                 key={q}
                                                 className="border-b last:border-b-0 hover:bg-gray-50 transition duration-200"
                                             >
-                                                <td className="px-6 py-4">{q}</td>
+                                                <td className="px-6 py-4">Q{Number(q)+1}</td>
                                                 <td className="px-6 py-4">{ans}</td>
                                             </tr>
                                         ))}
