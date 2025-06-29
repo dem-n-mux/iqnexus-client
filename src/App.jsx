@@ -12,10 +12,10 @@ import AdmitCard from "./pages/AdmitCard";
 import Results from "./pages/Results";
 import StudyMaterials from "./pages/StudyMaterials";
 import Certificates from "./pages/Certificates";
-import AnswerKeys from "./pages/AnswerKeys";
 import Feedback from "./pages/Feedback";
 import PracticeOMR from "./pages/PracticeOMR";
 import Sidebar from "./pages/Sidebar";
+import AnswerKey  from "./pages/AnswerKey";
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -47,9 +47,10 @@ function App() {
             path="/certificates"
             element={user ? <Certificates /> : <Navigate to="/" replace />}
           />
+        
           <Route
             path="/answer-key"
-            element={user ? <AnswerKeys /> : <Navigate to="/" replace />}
+            element={user ? <AnswerKey /> : <Navigate to="/" replace />}
           />
           <Route
             path="/feedback"

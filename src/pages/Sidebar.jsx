@@ -133,13 +133,13 @@ const Sidebar = () => {
             href="/certificates"
             onClick={closeSidebar}
           />
-          {/* <MenuItem
+          <MenuItem
             icon={<KeyRound size={20} />}
             text="ANSWER KEY"
             delay={500}
             href="/answer-key"
             onClick={closeSidebar}
-          /> */}
+          />
           <MenuItem
             icon={<MessageSquare size={20} />}
             text="FEEDBACK"
