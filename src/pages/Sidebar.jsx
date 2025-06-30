@@ -112,13 +112,13 @@ const Sidebar = () => {
             href="/admit-card"
             onClick={closeSidebar}
           />
-          {/* <MenuItem
+          <MenuItem
             icon={<GraduationCap size={20} />}
             text="RESULTS"
             delay={200}
             href="/results"
             onClick={closeSidebar}
-          /> */}
+          />
           <MenuItem
             icon={<BookOpen size={20} />}
             text="STUDY MATERIALS"
